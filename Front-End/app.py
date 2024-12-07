@@ -6,14 +6,17 @@ import time
 import threading
 import random
 
+# Database connection configuration
+DB_CONFIG = {
+    "host": "localhost",
+    "user": "root",
+    "password": "root1234",
+    "database": "paymentDB"
+}
+
 def create_connection():
     try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='root1234',
-            database='paymentDB'
-        )
+        connection = mysql.connector.connect(**DB_CONFIG)
         if connection.is_connected():
             print("Connected to MySQL")
         return connection
@@ -206,12 +209,7 @@ def set_user_accounts_inactive(connection):
 
 def perform_transaction_thread(thread_id, from_account_id, to_account_id, min_amount, max_amount):
     try:
-        thread_connection = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='root1234',
-            database='paymentDB'
-        )
+        thread_connection = mysql.connector.connect(**DB_CONFIG)
         cursor = thread_connection.cursor()
         amount = random.uniform(min_amount, max_amount)
         cursor.callproc('PerformTransaction', [from_account_id, to_account_id, amount])
